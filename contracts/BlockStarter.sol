@@ -31,7 +31,7 @@ contract BlockStarter {
     mapping(uint256 => Project) private projects;
     uint256 private numberOfProjects = 0;
 
-    function createProject(
+    function createCampaign(
         address _owner,
         string memory _title,
         string memory _description,
@@ -57,7 +57,7 @@ contract BlockStarter {
         return numberOfProjects - 1;
     }
 
-    function donateToProject(uint256 _id) external payable {
+    function donate(uint256 _id) external payable {
         Project storage project = projects[_id];
 
         require(msg.value > 0, "Invalid amount.");
@@ -74,7 +74,7 @@ contract BlockStarter {
         return (projects[_id].donators, projects[_id].donations);
     }
 
-    function getProjects() external view returns (ProjectItem[] memory) {
+    function getCampaigns() external view returns (ProjectItem[] memory) {
         ProjectItem[] memory allProjects = new ProjectItem[](numberOfProjects);
 
         for (uint256 i = 0; i < numberOfProjects; i++) {
@@ -84,7 +84,7 @@ contract BlockStarter {
         return allProjects;
     }
 
-    function getProject(uint256 _id) external view returns (ProjectItem memory) {
+    function getCampaign(uint256 _id) external view returns (ProjectItem memory) {
         return fillProjectItem(_id);
     }
 
@@ -92,7 +92,7 @@ contract BlockStarter {
         return address(this).balance;
     }
 
-    function requestRefund(uint256 _id, uint256 _amount) external payable {
+    function refund(uint256 _id, uint256 _amount) external payable {
         Project storage project = projects[_id];
 
         require(projectHasExpired(_id), "This campaign is active.");
@@ -103,7 +103,7 @@ contract BlockStarter {
         project.ownerBalance -= _amount;
     }
 
-    function ownerWithdrawal(uint256 _id, uint256 _amount) external payable {
+    function cashout(uint256 _id, uint256 _amount) external payable {
         Project storage project = projects[_id];
 
         require(project.sumOfAllDonations >= project.target, "The target has not been reached yet");
@@ -112,6 +112,10 @@ contract BlockStarter {
         require(sendFromContract(payable(project.owner), _amount), "Withdrawal failed.");
 
         project.ownerBalance -= _amount;
+    }
+
+    function getRefundableBalance(uint256 _projectId) external view returns (uint256) {
+        return projects[_projectId].donatorBalances[msg.sender];
     }
 
     function fillProjectItem(uint256 _projectId) private view returns (ProjectItem memory) {
