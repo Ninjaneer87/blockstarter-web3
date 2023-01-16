@@ -114,8 +114,8 @@ contract BlockStarter {
         project.ownerBalance -= _amount;
     }
 
-    function getRefundableBalance(uint256 _projectId) external view returns (uint256) {
-        return projects[_projectId].donatorBalances[msg.sender];
+    function getRefundableBalance(address _user, uint256 _projectId) external view returns (uint256) {
+        return projects[_projectId].donatorBalances[_user];
     }
 
     function fillProjectItem(uint256 _projectId) private view returns (ProjectItem memory) {
