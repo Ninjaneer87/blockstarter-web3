@@ -1,6 +1,6 @@
 ## BlockStarter
 
-Technologies used: `Solidity` | `thirdweb` | `MetaMask`
+Technologies used: `Solidity` | `thirdweb`
 
 ## Network
 
